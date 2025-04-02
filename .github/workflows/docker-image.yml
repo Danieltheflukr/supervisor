@@ -1,18 +1,18 @@
-name: Docker Image CI
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
++ name: Build and push Docker image
++ run: |
++   # Set meaningful image name and tag based on GitHub context
++   IMAGE_NAME=homeassistant/supervisor
++   IMAGE_TAG=${GITHUB_REF_NAME//\//-}
++   
++   # Build the image
++   docker build . --file Dockerfile --tag $IMAGE_NAME:$IMAGE_TAG
++   
++   # Also create a timestamp tag for reference
++   TIMESTAMP=$(date +%Y%m%d%H%M%S)
++   docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:$TIMESTAMP
++   
++   # For PRs, don't push the image
++   if [ "$GITHUB_EVENT_NAME" != "pull_request" ]; then
++     echo "Publishing image to registry..."
++     # Add docker login and push steps here
++   fi
