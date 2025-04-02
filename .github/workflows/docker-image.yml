@@ -1,7 +1,5 @@
 + name: Build and push Docker image
-+ run: |
-+   # Set meaningful image name and tag based on GitHub context
-+   IMAGE_NAME=homeassistant/supervisor
++ run: IMAGE_NAME=homeassistant/supervisor
 +   IMAGE_TAG=${GITHUB_REF_NAME//\//-}
 +   
 +   # Build the image
